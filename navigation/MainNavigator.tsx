@@ -20,24 +20,7 @@ const MainNavigator = () => {
           ),
         }}
       />
-      {/* <Tab.Screen
-        name="Chat"
-        component={ChatNavigator}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="chat" size={24} color={color} />
-          ),
-        }}
-      /> */}
-      {/* <Tab.Screen
-        name="Payment"
-        component={PaymentNavigator}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="payment" size={24} color={color} />
-          ),
-        }}
-      /> */}
+      /> 
     </Tab.Navigator>
   );
 };
