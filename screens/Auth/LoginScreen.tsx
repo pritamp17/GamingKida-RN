@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import Login from '../../components/Auth/Login';
 
+const { width, height } = Dimensions.get('window');
 
 const LoginScreen = () => {
   return (
@@ -17,6 +18,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     alignItems: 'center',
     justifyContent: 'center',
+    width: width,
+    height: height,
   },
 });
 

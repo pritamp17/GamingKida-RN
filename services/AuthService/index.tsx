@@ -1,3 +1,3 @@
-import { googleSignIn, isUserSignedIn } from "./google";  // Correct the file name and 
+import { googleSignIn, isUserSignedIn } from "./google";
 
 export default { googleSignIn, isUserSignedIn };
