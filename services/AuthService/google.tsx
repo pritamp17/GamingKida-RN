@@ -1,4 +1,6 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Dispatch } from 'redux';
+import { loginSuccess } from '../actions/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 GoogleSignin.configure({
@@ -10,6 +12,7 @@ export const googleSignIn = async () => {
   try {
     const userInfo = await GoogleSignin.signIn();
     await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+    dispatch(loginSuccess(userInfo));
     return userInfo;
   } catch (error) {
     if (error.code === 'SIGN_IN_CANCELLED') {
@@ -22,15 +25,3 @@ export const googleSignIn = async () => {
   }
 };
 
-export const isUserSignedIn = async () => {
-  try {
-    const userInfo = await AsyncStorage.getItem('user');
-    if (userInfo) {
-      return JSON.parse(userInfo);
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
-  }
-};

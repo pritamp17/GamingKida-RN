@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import Login from '../../components/Auth/Login';
+import googleLoginButton from '../../components/Auth/googleLoginButton';
 
 const { width, height } = Dimensions.get('window');
 
 const LoginScreen = () => {
   return (
     <View style={styles.container}>
-      <Login />
+      <googleLoginButton />
     </View>
   );
 };
