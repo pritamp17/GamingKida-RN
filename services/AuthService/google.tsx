@@ -1,19 +1,18 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Dispatch } from 'redux';
+import { loginSuccess } from '../actions/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Configuration for Google Signin
 GoogleSignin.configure({
-  webClientId: 'YOUR_WEB_CLIENT_ID',  // Your web client ID from Google Cloud Console
+  webClientId: 'YOUR_WEB_CLIENT_ID',
   offlineAccess: true,
-  // You can include other configuration options if needed
 });
 
 export const googleSignIn = async () => {
   try {
-    // Prompt user to sign in with Google
     const userInfo = await GoogleSignin.signIn();
-    // Store user information in AsyncStorage
     await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+    dispatch(loginSuccess(userInfo));
     return userInfo;
   } catch (error) {
     if (error.code === 'SIGN_IN_CANCELLED') {
@@ -23,20 +22,6 @@ export const googleSignIn = async () => {
     } else {
       return "Error signing in with Google";
     }
-  }
-};
-
-export const isUserSignedIn = async () => {
-  try {
-    const userInfo = await AsyncStorage.getItem('user');
-    
-    if (userInfo) {
-      return userInfo;  // User has previously signed in
-    } else {
-      return null; // User has not signed in before
-    }
-  } catch (error) {
-    return null;   // Error occurred, assuming user is not signed in
   }
 };
 
