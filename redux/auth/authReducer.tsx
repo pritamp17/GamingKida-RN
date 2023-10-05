@@ -15,7 +15,7 @@ const authReducer = (state = initialState, action: AuthActionTypes): AuthState =
     case LOGIN_SUCCESS:
       return {
         ...state,
-        userInfo: action.payload.userInfo,
+        userInfo: action.payload.user,
       };
     case LOGOUT:
       return {

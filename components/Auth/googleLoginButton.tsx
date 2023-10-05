@@ -10,7 +10,7 @@ const googleLoginButton = () => {
   const handleGoogleSignIn = async () => {
     const userInfo = await googleSignIn();
     if (userInfo) {
-      useDispatch(LoginSuccessAction(userInfo))
+      useDispatch(LoginSuccessAction(userInfo.user))
     }else{
       console.log("Error logging in with Google")
     }

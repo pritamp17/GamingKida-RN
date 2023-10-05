@@ -19,7 +19,7 @@ export interface LogoutAction extends Action {
 export const loginSuccess = (userInfo: any): LoginSuccessAction => ({
   type: LOGIN_SUCCESS,
   payload: {
-    userInfo,
+    user,
   },
 });
 
