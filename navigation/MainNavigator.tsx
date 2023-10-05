@@ -1,27 +1,44 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import AuthNavigator from './AuthNavigator';
-// import ChatNavigator from './ChatNavigator';
-// import PaymentNavigator from './PaymentNavigator';
+import ChatScreen from '../screens/ChatScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const MainNavigator = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Auth"
-        component={AuthNavigator}
+    <Stack.Navigator
+      initialRouteName="main"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#f4511e',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        headerRight: () => (
+          <MaterialIcons name="home" size={24} color="#fff" />
+        ),
+      }}
+    >
+      <Stack.Screen
+        name="Chat"
+        component={ChatScreen}
         options={{
-          tabBarIcon: ({ color }: { color?: string }) => (   //// to be corrected
-            <MaterialIcons name="login" size={24} color={color} />
-          ),
+          title: 'Chat',
         }}
       />
-      /> 
-    </Tab.Navigator>
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+        }}
+      />
+    </Stack.Navigator>
   );
 };
 
