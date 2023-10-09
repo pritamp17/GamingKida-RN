@@ -5,7 +5,8 @@ import { googleSignIn } from '../../services/AuthServices/index'; // Adjust the 
 import { useDispatch } from 'react-redux';
 const { width } = Dimensions.get('window');
 import {LoginSuccessAction} from '../../redux/auth/authActions'
-const googleLoginButton = () => {
+
+const GoogleLoginButton = () => {
 
   const handleGoogleSignIn = async () => {
     const userInfo = await googleSignIn();
@@ -52,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default GoogleLoginButton;
