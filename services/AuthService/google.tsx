@@ -1,5 +1,5 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { Dispatch } from 'redux';
+import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../../redux/auth/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addUserToFirestore } from '../userService/index';
@@ -9,25 +9,31 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-export const googleSignIn = async () => {
+export const googleSignIn = async (): Promise<string | null> => {
   try {
     const userInfo = await GoogleSignin.signIn();
-    await AsyncStorage.setItem('user', JSON.stringify(userInfo.user));
-    if(userInfo){
-        dispatch(loginSuccess(userInfo));
-        if (userInfo && userInfo.user) {
+
+    if (userInfo) {
+      await AsyncStorage.setItem('user', JSON.stringify(userInfo.user));
+      const dispatch = useDispatch();
+
+      dispatch(loginSuccess(userInfo));
+
+      if (userInfo && userInfo.user) {
         await addUserToFirestore(userInfo.user);
       }
+
+      return null;
     }
-    return userInfo;
-  } catch (error) {
+    return "User info could not be retrieved";
+  } catch (error: any) {
     if (error.code === 'SIGN_IN_CANCELLED') {
       return "User cancelled the sign in request";
     } else if (error.code === 'IN_PROGRESS') {
       return "Sign in is in progress";
     } else {
+      console.error("Error during Google sign in: ", error);
       return "Error signing in with Google";
     }
   }
 };
-
