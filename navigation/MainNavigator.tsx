@@ -2,8 +2,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import ChatScreen from '../screens/ChatScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import ChatScreen from '../screens/chat/oneToOneChat';
+import ProfileScreen from '../screens/profile/profile';
 
 const Stack = createStackNavigator();
 

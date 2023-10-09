@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import GoogleLoginButton from '../../components/Auth/googleLoginButton';
+import GoogleLoginButton from '../../components/Auth/GoogleLoginButton';
 
 const { width, height } = Dimensions.get('window');
 

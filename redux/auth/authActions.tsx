@@ -16,7 +16,7 @@ export interface LogoutAction extends Action {
   type: typeof LOGOUT;
 }
 
-export const loginSuccess = (userInfo: any): LoginSuccessAction => ({
+export const loginSuccess = (user: any): LoginSuccessAction => ({
   type: LOGIN_SUCCESS,
   payload: {
     user,

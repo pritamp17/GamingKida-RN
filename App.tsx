@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import MainNavigator from './navigation/MainNavigator';
 import AuthNavigator from './navigation/AuthNavigator';
-import { loginSuccess } from './redux/actions'; // assuming you have this action
+import { loginSuccess } from './redux/auth/authActions'; // assuming you have this action
 
 export default function App() {
   const [isUserChecked, setUserChecked] = useState(false);

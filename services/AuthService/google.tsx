@@ -1,8 +1,8 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Dispatch } from 'redux';
-import { loginSuccess } from '../actions/authActions';
+import { loginSuccess } from '../../redux/auth/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addUserToFirestore } from './userService/index';
+import { addUserToFirestore } from '../userService/index';
 
 GoogleSignin.configure({
   webClientId: 'YOUR_WEB_CLIENT_ID',

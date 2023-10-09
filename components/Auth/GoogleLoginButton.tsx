@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
-import { googleSignIn } from '../../services/AuthServices/index'; // Adjust the import path accordingly
+import { googleSignIn } from '../../services/AuthService/google'; // Adjust the import path accordingly
 import { useDispatch } from 'react-redux';
 const { width } = Dimensions.get('window');
 import {LoginSuccessAction} from '../../redux/auth/authActions'

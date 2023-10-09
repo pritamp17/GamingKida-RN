@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { useSelector } from 'react-redux';
-import { getMessages, sendMessage } from './chatService';
+import { getMessages, sendMessage } from '../../services/chatService/index';
 import { IMessage, User } from '../../commons/interface/giftedChat';
 
 const ChatScreen = () => {
@@ -30,7 +30,7 @@ const ChatScreen = () => {
       user: user,
     };
     sendMessage(chatId, message)
-      .catch((error) => console.error("Error sending message:", error));
+      .catch((error: any) => console.error("Error sending message:", error));
   };
 
   return (
