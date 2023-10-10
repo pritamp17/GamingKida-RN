@@ -1,6 +1,6 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../redux/auth/authActions';
+import { Login } from '../../redux/auth/authActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addUserToFirestore } from '../userService/index';
 
@@ -9,7 +9,7 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-export const googleSignIn = async (): Promise<string | null> => {
+export const googleSignIn = async () => {
   try {
     const userInfo = await GoogleSignin.signIn();
 
@@ -26,7 +26,7 @@ export const googleSignIn = async (): Promise<string | null> => {
       return null;
     }
     return "User info could not be retrieved";
-  } catch (error: any) {
+  } catch (errorr) {
     if (error.code === 'SIGN_IN_CANCELLED') {
       return "User cancelled the sign in request";
     } else if (error.code === 'IN_PROGRESS') {

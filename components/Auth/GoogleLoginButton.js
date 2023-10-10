@@ -4,21 +4,21 @@ import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { googleSignIn } from '../../services/AuthService/google'; // Adjust the import path accordingly
 import { useDispatch } from 'react-redux';
 const { width } = Dimensions.get('window');
-import {LoginSuccessAction} from '../../redux/auth/authActions'
+import {Login} from '../../redux/auth/authActions'
 
 const GoogleLoginButton = () => {
 
   const handleGoogleSignIn = async () => {
     const userInfo = await googleSignIn();
     if (userInfo) {
-      useDispatch(LoginSuccessAction(userInfo.user))
+      useDispatch(Login(userInfo.user))
     }else{
       console.log("Error logging in with Google")
     }
     console.log(userInfo);
     
   };
-
+r
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome Back!</Text>
