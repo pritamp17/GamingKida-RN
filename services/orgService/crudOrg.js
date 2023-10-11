@@ -1,115 +1,86 @@
 import { db } from '../firebase/firebaseconfig';
+import { Org, orgExists, isUserAdmin } from './helpers'
 
-class Org {
-    constructor(name, createdAt, adminIds, memberIds, competitionIds) {
-        this.name = name;
-        this.createdAt = createdAt;
-        this.adminIds = adminIds;
-        this.memberIds = memberIds;
-        this.competitionIds = competitionIds;
-    }
-}
 
 export const createOrg = async (org, userId) => {
-    // Validate org
-    if (!(org instanceof Org)) {
-        throw new Error('Expected argument of type "Org"');
-    }
+    try {
+        if (!(org instanceof Org)) throw new Error('Expected argument of type "Org"');
 
-    // Reference to the Firestore collection
-    const orgCollection = db.collection('org');
+        if (await orgExists(org.name)) {
+            console.error('Organization name is already taken!');
+            return false;
+        }
 
-    // Check if the organization name is already taken
-    const nameCheck = await orgCollection.where('name', '==', org.name).get();
-    
-    if (!nameCheck.empty) {
-        console.error('Organization name is already taken!');
-        return false;
-    }
+        org.adminIds.push(userId);
+        org.memberIds.push(userId);
 
-    // Add userId to adminIds and memberIds
-    org.adminIds.push(userId);
-    org.memberIds.push(userId);
+        const docRef = await db.collection('org').add({
+            name: org.name,
+            createdAt: org.createdAt,
+            adminIds: org.adminIds,
+            memberIds: org.memberIds,
+            competitionIds: org.competitionIds
+        });
 
-    // Add the new org into Firestore and auto-generate an ID
-    return orgCollection.add({
-        name: org.name,
-        createdAt: org.createdAt,
-        adminIds: org.adminIds,
-        memberIds: org.memberIds,
-        competitionIds: org.competitionIds
-    })
-    .then((docRef) => {
         console.log('Organization successfully created with ID: ', docRef.id);
-        return docRef.id; // Return the ID of the newly created doc
-    })
-    .catch((error) => {
+        return docRef.id;
+    } catch (error) {
         console.error('Error creating organization: ', error);
         return false;
-    });
+    }
 };
 
 export const searchOrg = async (name) => {
-    try {
-        // Reference to the Firestore collection
-        const orgCollection = db.collection('org');
-
-        // Search for the organization by name
-        const querySnapshot = await orgCollection.where('name', '==', name).get();
-
-        // Check if any documents are found
-        if (!querySnapshot.empty) {
-            // Get the first document (there should only be one due to name uniqueness)
-            const orgDoc = querySnapshot.docs[0];
-
-            // Return the organization data as an object
-            return {
-                id: orgDoc.id,
-                ...orgDoc.data()
-            };
-        } else {
-            console.error('No organization found with the provided name!');
-            return null;
-        }
-    } catch (error) {
-        console.error('Error searching for organization: ', error);
-        return null;
-    }
+    return await orgExists(name);
 };
 
 export const deleteOrg = async (name, userId) => {
     try {
-        // Reference to the Firestore collection
-        const orgCollection = db.collection('org');
-
-        // Search for the organization by name
-        const querySnapshot = await orgCollection.where('name', '==', name).get();
-
-        // Check if any documents are found
-        if (!querySnapshot.empty) {
-            // Get the first document (there should only be one due to name uniqueness)
-            const orgDoc = querySnapshot.docs[0];
-            
-            // Check if the userId is in the adminIds array
-            const orgData = orgDoc.data();
-            if (orgData.adminIds.includes(userId)) {
-                // Delete the organization
-                await orgCollection.doc(orgDoc.id).delete();
-                console.log(`Organization with name "${name}" has been deleted.`);
-                return true;
-            } else {
-                console.error("Error: User is not an admin of this organization and cannot delete it.");
-                return false;
-            }
-        } else {
+        const orgData = await orgExists(name);
+        if (!orgData) {
             console.error(`No organization found with the name "${name}"!`);
             return false;
         }
+
+        if (!await isUserAdmin(userId, orgData)) {
+            console.error("Error: User is not an admin of this organization and cannot delete it.");
+            return false;
+        }
+
+        await db.collection('org').doc(orgData.id).delete();
+        console.log(`Organization with name "${name}" has been deleted.`);
+        return true;
     } catch (error) {
         console.error('Error deleting organization: ', error);
         return false;
     }
 };
 
+export const renameOrg = async (userId, oldName, newName) => {
+    try {
+        const oldOrgData = await orgExists(oldName);
+        if (!oldOrgData) {
+            console.error(`No organization found with the name "${oldName}"!`);
+            return false;
+        }
 
-export { Org };
+        if (!await isUserAdmin(userId, oldOrgData)) {
+            console.error("Error: User is not an admin of this organization and cannot rename it.");
+            return false;
+        }
+
+        if (await orgExists(newName)) {
+            console.error(`Organization with the name "${newName}" already exists!`);
+            return false;
+        }
+
+        await db.collection('org').doc(oldOrgData.id).update({ name: newName });
+        console.log(`Organization "${oldName}" has been renamed to "${newName}"`);
+        return true;
+    } catch (error) {
+        console.error('Error renaming organization: ', error);
+        return false;
+    }
+};
+
+
