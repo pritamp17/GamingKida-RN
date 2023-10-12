@@ -66,7 +66,7 @@ export const renameOrg = async (userId, oldName, newName) => {
             return false;
         }
 
-        if (!await isUserAdmin(userId, oldOrgData)) {
+        if (!await isUserSuperAdmin(userId, oldOrgData)) {
             console.error("Error: User is not an admin of this organization and cannot rename it.");
             return false;
         }
