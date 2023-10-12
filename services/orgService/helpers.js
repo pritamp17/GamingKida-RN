@@ -2,9 +2,10 @@ import { db } from '../firebase/firebaseconfig';
 
 // Class Definition
 class Org {
-    constructor(name, createdAt, adminIds = [], memberIds = [], competitionIds = []) {
+    constructor(name, createdAt, superAdmin,adminIds = [], memberIds = [], competitionIds = []) {
         this.name = name;
         this.createdAt = createdAt;
+        this.superAdmin = superAdmin
         this.adminIds = adminIds;
         this.memberIds = memberIds;
         this.competitionIds = competitionIds;
@@ -28,4 +29,8 @@ const isUserAdmin = async (userId, orgData) => {
     return orgData.adminIds.includes(userId);
 };
 
-export { Org, orgExists, isUserAdmin};
+const isUserSuperAdmin = async (userId, orgData) => {
+    return orgData.superAdmin === userId;
+};
+
+export { Org, orgExists, isUserAdmin, isUserSuperAdmin};
