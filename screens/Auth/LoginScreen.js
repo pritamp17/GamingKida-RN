@@ -11,7 +11,7 @@ const { width, height } = Dimensions.get('window');
 
 const LoginScreen = () => {
     return (
-        <ImageBackground source={require('./assets/your_background_image.png')} style={styles.background}>
+        <ImageBackground source={require('../../assets/images/loginPage')} style={styles.background}>
             <View style={styles.container}>
                 <GoogleSignInBtn/>
             </View>
