@@ -1,13 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import {TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { googleSignIn } from '../../services/AuthService/google'; // Adjust the import path accordingly
 import { useDispatch } from 'react-redux';
-const { width } = Dimensions.get('window');
 import {Login} from '../../redux/auth/authActions'
 
-const GoogleLoginButton = () => {
-
+const GoogleSignInBtn = () => {
   const handleGoogleSignIn = async () => {
     const userInfo = await googleSignIn();
     if (userInfo) {
@@ -18,39 +16,32 @@ const GoogleLoginButton = () => {
     console.log(userInfo);
     
   };
-r
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back!</Text>
-      <View style={styles.buttonContainer}>
-        <GoogleSigninButton
-          style={{ width: width * 0.8, height: 48 }}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={handleGoogleSignIn}
-        />
-      </View>
-    </View>
-  );
+
+    return (
+        <TouchableOpacity style={styles.circle} onPress={onPress}>
+            <GoogleSigninButton 
+                style={styles.googleButton}
+                size={GoogleSigninButton.Size.Wide}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={handleGoogleSignIn}
+            />
+        </TouchableOpacity>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    width: '80%',
-    alignItems: 'center',
-  },
+    circle: {
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)', // Transparent white
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    googleButton: {
+        width: '80%',
+        height: 48,
+    },
 });
 
-export default GoogleLoginButton;
+export default GoogleSignInBtn;
