@@ -1,4 +1,4 @@
-import { db } from '../firebase/firebaseconfig';
+import { db } from '../Firebase/firebaseconfig';
 import { Org, orgExists, isUserAdmin, isUserSuperAdmin } from './helpers'
 
 
@@ -15,7 +15,7 @@ export const createOrg = async (org, userId) => {
         org.adminIds.push(userId);
         org.memberIds.push(userId);
 
-        const docRef = await db.collection('org').add({
+        const docRef = await db.collection('orgs').add({
             name: org.name,
             createdAt: org.createdAt,
             superAdmin:org.superAdmin,
@@ -49,7 +49,7 @@ export const deleteOrg = async (name, userId) => {
             return false;
         }
 
-        await db.collection('org').doc(orgData.id).delete();
+        await db.collection('orgs').doc(orgData.id).delete();
         console.log(`Organization with name "${name}" has been deleted.`);
         return true;
     } catch (error) {
@@ -76,7 +76,7 @@ export const renameOrg = async (userId, oldName, newName) => {
             return false;
         }
 
-        await db.collection('org').doc(oldOrgData.id).update({ name: newName });
+        await db.collection('orgs').doc(oldOrgData.id).update({ name: newName });
         console.log(`Organization "${oldName}" has been renamed to "${newName}"`);
         return true;
     } catch (error) {
@@ -110,7 +110,7 @@ export const removeMember = async (orgName, memberId, adminId) => {
         const updatedMemberIds = orgData.memberIds.filter(id => id !== memberId);
 
         // Update the memberIds in the Firestore document
-        await db.collection('org').doc(orgData.id).update({ memberIds: updatedMemberIds });
+        await db.collection('orgs').doc(orgData.id).update({ memberIds: updatedMemberIds });
 
         console.log(`Member with ID "${memberId}" has been removed from the organization "${orgName}"`);
         return true;
@@ -140,7 +140,7 @@ export const makeUserAdmin = async (superAdminId, userId, orgName) => {
 
         // Make the user an admin by adding to adminIds if not already an admin.
         if (!orgData.adminIds.includes(userId)) {
-            await db.collection('org').doc(orgData.id).update({
+            await db.collection('orgs').doc(orgData.id).update({
                 adminIds: [...orgData.adminIds, userId]
             });
             console.log(`User with ID: "${userId}" is now an admin of the organization "${orgName}".`);
@@ -177,7 +177,7 @@ export const removeAdmin = async (orgName, superAdminId, adminId) => {
         const newAdminIds = orgData.adminIds.filter(id => id !== adminId);
 
         // Update the database.
-        await db.collection('org').doc(orgData.id).update({
+        await db.collection('orgs').doc(orgData.id).update({
             adminIds: newAdminIds
         });
 
@@ -190,10 +190,23 @@ export const removeAdmin = async (orgName, superAdminId, adminId) => {
 };
 
 
-
-
-
-
+export const addCompetitionToOrg = async (orgName, competitionId) => {
+    try {
+        const orgData = await orgExists(orgName);
+        if (!orgData) return false;
+       if (!orgData.competitionIds.includes(competitionId)) {
+        await db.collection('orgs').doc(orgData.id).update({
+            competitionIds: [...orgData.competitionIds, competitionId]
+        });
+    } else {
+        console.log(`competetion with ID: "${competitionId}" is already an present in the organization "${orgName}".`);
+    }
+    return true;
+    } catch (error) {
+        console.error('Error adding competetion to org: ', error);
+        return false;
+    }
+}
 
 
 

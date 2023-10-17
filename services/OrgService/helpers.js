@@ -1,4 +1,4 @@
-import { db } from '../firebase/firebaseconfig';
+import { db } from '../Firebase/firebaseconfig';
 
 // Class Definition
 class Org {
