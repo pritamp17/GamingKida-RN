@@ -13,7 +13,7 @@ class Tournament {
         this.scheduledAt = scheduledAt;        // Date when the tournament is scheduled
         this.paid = paid;                      // Boolean indicating if the tournament is paid
         this.fee = fee;                        // Fee for the tournament (only if it's a paid tournament)
-        this.publicOrPrivate = publicOrPrivate; // Indicates if the tournament is public or private
+        this.publicOrPrivate = publicOrPrivate; // Indicates if the tournament is public or private /// Only for orgs
         this.memberIds = memberIds;            // List of members (users) of the tournament
         this.requests = requests;              // List of join requests for the tournament (especially for private tournaments)
     }
@@ -28,12 +28,11 @@ export const uploadImageToFirebase = async (image) => {
 
 export const getTournamentById = async (id) => {
     try {
-        const querySnapshot = await db.collection('tournaments').where('id', '==', id).get();
-        if (querySnapshot.empty) return null;
-        const tournamentDoc = querySnapshot.docs[0];
-        return { tournament: tournamentDoc.data()};
+        const tournamentDoc = await db.collection('tournaments').doc(id).get();
+        if (!tournamentDoc.exists) return null;
+        return { tournament: tournamentDoc.data() };
     } catch (error) {
-        console.error('Error checking tournamnet existence: ', error);
+        console.error('Error retrieving tournament: ', error);
         return null;
     }
 }
