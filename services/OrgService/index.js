@@ -1,5 +1,5 @@
-import {createOrg, searchOrg, deleteOrg, renameOrg, removeMember, makeUserAdmin, removeAdmin} from './crudOrg';
-import {Org} from './helpers';
+import {createOrg, searchOrg, deleteOrg, renameOrg, removeMember, makeUserAdmin, removeAdmin, addCompetitionToOrg} from './crudOrg';
+import {Org, orgExists, orgById, isUserAdmin, isUserSuperAdmin } from './helpers';
 
 export {
     Org,
@@ -9,5 +9,10 @@ export {
     renameOrg,
     removeMember,
     removeAdmin,
-    makeUserAdmin
+    makeUserAdmin,
+    addCompetitionToOrg,
+    orgExists,
+    orgById,
+    isUserAdmin,
+    isUserSuperAdmin
 }

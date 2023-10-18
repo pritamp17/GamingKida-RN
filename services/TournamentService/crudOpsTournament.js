@@ -1,7 +1,6 @@
 import { db } from '../Firebase/firebaseconfig';
 import {Tournament, uploadImageToFirebase, getTournamentById} from './helper'
-import {orgExists, isUserAdmin} from '../OrgService/helpers'
-import {addCompetitionToOrg} from '../OrgService/crudOrg'
+import {orgExists, isUserAdmin, addCompetitionToOrg} from '../OrgService/index'
 
 const MAX_Members_IN_COMPETETION = 100;
 
