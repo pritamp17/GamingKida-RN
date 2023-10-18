@@ -1,4 +1,4 @@
-import { db } from '../firebase/firebaseconfig';
+import { db } from '../Firebase/firebaseconfig';
 
 // Class Definition
 class Org {
@@ -14,9 +14,8 @@ class Org {
 
 const orgExists = async (name) => {
     try {
-        const querySnapshot = await db.collection('org').where('name', '==', name).get();
+        const querySnapshot = await db.collection('orgs').where('name', '==', name).get();
         if (querySnapshot.empty) return null;
-
         const orgDoc = querySnapshot.docs[0];
         return { id: orgDoc.id, ...orgDoc.data() };
     } catch (error) {
@@ -24,6 +23,17 @@ const orgExists = async (name) => {
         return null;
     }
 };
+
+const orgById = async (id) => {
+    try {
+        const orgDoc = await db.collection('orgs').doc(id).get();
+        if (!orgDoc.exists) return null;
+        return { id: orgDoc.id, ...orgDoc.data() };
+    } catch (error) {
+        console.error('Error retrieving tournament: ', error);
+        return null;
+    }
+}
 
 const isUserAdmin = async (userId, orgData) => {
     return orgData.adminIds.includes(userId);
@@ -33,4 +43,4 @@ const isUserSuperAdmin = async (userId, orgData) => {
     return orgData.superAdmin === userId;
 };
 
-export { Org, orgExists, isUserAdmin, isUserSuperAdmin};
+export { Org, orgExists, isUserAdmin, isUserSuperAdmin, orgById};

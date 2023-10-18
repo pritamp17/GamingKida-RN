@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { useSelector } from 'react-redux';
-import { getMessages, sendMessage } from '../../services/chatService/index';
+import { getMessages, sendMessage } from '../../services/ChatService/index';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
