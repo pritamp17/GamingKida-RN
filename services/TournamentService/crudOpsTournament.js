@@ -32,14 +32,14 @@ export const createCompetition = async (orgId, orgName, name, description, game,
             createdBy,
             createdAt: new Date().toISOString(),
             scheduledAt,
-            paid,
-            fee,
+            paid: false,
+            fee: 0,
             publicOrPrivate,
             memberIds: [],
             requests: [],
             payRequests: []
         };
-        const docRef = await db.collection('tournaments').add(newCompetition); // tournaments is the collection name in Firebase Firestore
+        const docRef = await db.collection('tournaments').doc('unpaid').collection('ids').add(newCompetition); // tournaments is the collection name in Firebase Firestore
         addCompetitionToOrg(orgName, docRef.id);
         return { success: true, id: docRef.id };
     } catch (error) {
@@ -59,7 +59,7 @@ export const sendRequestToJoinCompetetion = async (userId, tournamentId) => {
         }
         
         if(tournamentData && !tournamentData.requests.includes(userId)){
-            await db.collection('tournaments').doc(orgData.id).update({
+            await await db.collection('tournaments').doc('unpaid').collection('ids').doc(tournamentId).update({
                 requests: [...tournamentData.requests, userId]
             });
         }else{
@@ -94,7 +94,7 @@ export const acceptTournamentJoiningRequest = async (tournamentId, userId, reque
                     tournamentData.members.push(requestId);
                     
                     // Update the document in the database
-                    await db.collection('tournaments').doc(tournamentId).update({
+                    await db.collection('tournaments').doc('unpaid').collection('ids').doc(tournamentId).update({
                         requests: tournamentData.requests,
                         members: tournamentData.members
                     });
