@@ -27,9 +27,9 @@ export const uploadImageToFirebase = async (image) => {
     return await imageRef.getDownloadURL(); // get URL of uploaded image
 };
 
-export const getTournamentById = async (id) => {
+export const getUnpaidTournamentById = async (id) => {
     try {
-        const tournamentDoc = await db.collection('tournaments').doc(id).get();
+        const tournamentDoc = await db.collection('tournaments').doc('unpaid').collection('ids').doc(id).get();
         if (!tournamentDoc.exists) return null;
         return { tournament: tournamentDoc.data() };
     } catch (error) {

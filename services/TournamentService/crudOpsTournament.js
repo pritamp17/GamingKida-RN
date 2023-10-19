@@ -1,5 +1,5 @@
 import { db } from '../Firebase/firebaseconfig';
-import {Tournament, getTournamentById} from './helper'
+import {Tournament, getUnpaidTournamentById} from './helper'
 import {orgExists, isUserAdmin, addCompetitionToOrg} from '../OrgService/index'
 
 const MAX_Members_IN_COMPETETION = 100;
@@ -50,7 +50,7 @@ export const createCompetition = async (orgId, orgName, name, description, game,
 
 export const sendRequestToJoinCompetetion = async (userId, tournamentId) => {
     try {
-        const tournamentData = await getTournamentById(tournamentId);
+        const tournamentData = await getUnpaidTournamentById(tournamentId);
         const orgData = await orgExists(tournamentData.orgName);
         if(tournamentData.publicOrPrivate){
             if(!orgData.memberIds.includes(userId)){
@@ -73,7 +73,7 @@ export const sendRequestToJoinCompetetion = async (userId, tournamentId) => {
 
 export const acceptTournamentJoiningRequest = async (tournamentId, userId, requestId) => {
     try {
-        const tournamentData = await getTournamentById(tournamentId);
+        const tournamentData = await getUnpaidTournamentById(tournamentId);
         
         if(tournamentData){
             const orgData = await orgExists(tournamentData.orgName);
