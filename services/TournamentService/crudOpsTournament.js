@@ -1,5 +1,5 @@
 import { db } from '../Firebase/firebaseconfig';
-import {Tournament, uploadImageToFirebase, getTournamentById} from './helper'
+import {Tournament, getTournamentById} from './helper'
 import {orgExists, isUserAdmin, addCompetitionToOrg} from '../OrgService/index'
 
 const MAX_Members_IN_COMPETETION = 100;
@@ -36,7 +36,8 @@ export const createCompetition = async (orgId, orgName, name, description, game,
             fee,
             publicOrPrivate,
             memberIds: [],
-            requests: []
+            requests: [],
+            payRequests: []
         };
         const docRef = await db.collection('tournaments').add(newCompetition); // tournaments is the collection name in Firebase Firestore
         addCompetitionToOrg(orgName, docRef.id);
