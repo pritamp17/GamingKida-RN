@@ -3,7 +3,7 @@ import { db } from '../Firebase/firebaseconfig';
 export const savePaymentToFirebase = async (userId, name, success, transactionId, amount, verified, type) => {
     try {
         // As Firebase generates the ID, we don't specify a .doc() argument
-        const paymentRef = db.collection('payments').doc();
+        const paymentRef = db.collection('payments').doc('tournaments').collection('ids').doc();
 
         // Set the payment data
         await paymentRef.set({
