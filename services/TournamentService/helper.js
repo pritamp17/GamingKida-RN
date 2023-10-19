@@ -1,7 +1,7 @@
 import { db } from '../Firebase/firebaseconfig';
 
 class Tournament {
-    constructor(orgId, orgName,name, game, description, image, createdBy, createdAt, scheduledAt, paid, fee, publicOrPrivate, memberIds = [], requests = []) {
+    constructor(orgId, orgName,name, game, description, image, createdBy, createdAt, scheduledAt, paid, fee, publicOrPrivate, memberIds = [], requests = [], payRequests = []) {
         this.orgId = orgId;                    // ID of the organization (or userId if created by an individual user)
         this.orgName = orgName                 // orgName is same as createdBy for individual user
         this.name = name;                      // Name of the tournament
@@ -16,6 +16,7 @@ class Tournament {
         this.publicOrPrivate = publicOrPrivate; // Indicates if the tournament is public or private /// Only for orgs
         this.memberIds = memberIds;            // List of members (users) of the tournament
         this.requests = requests;              // List of join requests for the tournament (especially for private tournaments)
+        this.payRequests = this.payRequests
     }
 }
 
