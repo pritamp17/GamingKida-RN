@@ -48,28 +48,6 @@ export const createCompetition = async (orgId, orgName, name, description, game,
     }
 };
 
-export const sendRequestToJoinCompetetion = async (userId, tournamentId) => {
-    try {
-        const tournamentData = await getUnpaidTournamentById(tournamentId);
-        const orgData = await orgExists(tournamentData.orgName);
-        if(tournamentData.publicOrPrivate){
-            if(!orgData.memberIds.includes(userId)){
-                return {success: false, error: `"${tournamentData.name}" is private competetion and you are not member of "${orgData.name}"`};
-            }
-        }
-        
-        if(tournamentData && !tournamentData.requests.includes(userId)){
-            await await db.collection('tournaments').doc('unpaid').collection('ids').doc(tournamentId).update({
-                requests: [...tournamentData.requests, userId]
-            });
-        }else{
-            return {success: false, error: `User has sent request already for joining "${tournamentData.name}" ` };
-        }  
-    } catch (error) {
-        console.error(`error in sending joining request to tournament with ID "${tournamentId}"`);
-        return {success: false, error: error.message };
-    }
-}
 
 export const acceptTournamentJoiningRequest = async (tournamentId, userId, requestId) => {
     try {

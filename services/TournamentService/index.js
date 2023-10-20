@@ -1,5 +1,5 @@
-import {acceptTournamentJoiningRequest, createCompetition, sendRequestToJoinCompetetion} from './crudOpsTournament';
-import {Tournament, getUnpaidTournamentById, uploadImageToFirebase} from './helper'
+import {acceptTournamentJoiningRequest, createCompetition} from './crudOpsTournament';
+import {Tournament, getUnpaidTournamentById, uploadImageToFirebase, getPaidTournamentById, sendRequestToJoinCompetetion} from './helper'
 
 export {
     acceptTournamentJoiningRequest,
@@ -7,5 +7,6 @@ export {
     sendRequestToJoinCompetetion,
     Tournament,
     getUnpaidTournamentById,
-    uploadImageToFirebase
+    uploadImageToFirebase,
+    getPaidTournamentById
 }

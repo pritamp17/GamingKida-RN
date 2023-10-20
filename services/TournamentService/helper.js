@@ -38,4 +38,48 @@ export const getUnpaidTournamentById = async (id) => {
     }
 }
 
+
+export const getPaidTournamentById = async (id) => {
+    try {
+        const tournamentDoc = await db.collection('tournaments').doc('paid').collection('ids').doc(id).get();
+        if (!tournamentDoc.exists) return null;
+        return { tournament: tournamentDoc.data() };
+    } catch (error) {
+        console.error('Error retrieving tournament: ', error);
+        return null;
+    }
+}
+
+
+export const sendRequestToJoinCompetetion = async (userId, tournamentId, paid) => {
+    try {
+        let tournamentData;
+        let type;
+        if(paid){
+            tournamentData = await getPaidTournamentById(tournamentId);
+            type = 'paid';
+        }else{
+            tournamentData = await getUnpaidTournamentById(tournamentId);
+            type = 'unpaid';
+        }
+        const orgData = await orgExists(tournamentData.orgName);
+        if(tournamentData.publicOrPrivate){
+            if(!orgData.memberIds.includes(userId)){
+                return {success: false, error: `"${tournamentData.name}" is private competetion and you are not member of "${orgData.name}"`};
+            }
+        }
+        
+        if(tournamentData && !tournamentData.requests.includes(userId)){
+            await await db.collection('tournaments').doc(type).collection('ids').doc(tournamentId).update({
+                requests: [...tournamentData.requests, userId]
+            });
+        }else{
+            return {success: false, error: `User has sent request already for joining "${tournamentData.name}" ` };
+        }  
+    } catch (error) {
+        console.error(`error in sending joining request to tournament with ID "${tournamentId}"`);
+        return {success: false, error: error.message };
+    }
+}
+
 export {Tournament};
