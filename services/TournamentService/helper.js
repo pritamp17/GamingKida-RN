@@ -83,12 +83,14 @@ export const sendRequestToJoinCompetetion = async (userId, tournamentId, paid) =
     }
 }
 
-export const addTransxIdToTournamnet = async (id, transxId) => {
+export const addTransxIdToTournamnet = async (id, transxId, transxRef, userId) => {
     try {
+        const transcId = transxId + '+' + transxRef;
         const tournamentData = await getPaidTournamentById(id);
         if(tournamentData && !tournamentData.payRequests.includes(transxIs)){
             await db.collection('tournaments').doc('paid').collection('ids').doc(id).update({
-                payRequests: [...tournamentData.payRequests, transxId]
+                payRequests: [...tournamentData.payRequests, transcId],
+                memberIds: [...tournamentData.memberIds, userId]
             })
         }else{
             return {success: false, error: `Payrequest "${transxId}" already present in "${tournamentData.name}"` };
