@@ -1,6 +1,7 @@
 import { db } from '../Firebase/firebaseconfig';
-import {Tournament} from './helper'
+import {Tournament, getPaidTournamentById} from './helper'
 import {orgExists, isUserAdmin, addCompetitionToOrg, getpaidTournamentById} from '../OrgService/index'
+import { getTournamentPayInfo } from "../PayService";
 
 const MAX_Members_IN_COMPETETION = 100;
 
@@ -73,7 +74,7 @@ export const acceptPaidTournamentJoiningRequest = async (tournamentId, userId, r
                     // Update the document in the database
                     await db.collection('tournaments').doc('paid').collection('ids').doc(tournamentId).update({
                         requests: tournamentData.requests,
-                        members: tournamentData.members
+                        payRequests: tournamentData.payRequests
                     });
 
                     return { success: true, message: "Member added successfully" };
@@ -124,7 +125,7 @@ export const sendPayNotificationsToMembers = async(tournamentId) => {
     }
 };
 
-const sendExpoPushNotification = async (message) => {
+export const sendExpoPushNotification = async (message) => {
     const response = await fetch('https://exp.host/--/api/v2/push/send', {
         method: 'POST',
         headers: {
@@ -136,3 +137,42 @@ const sendExpoPushNotification = async (message) => {
     const data = await response.json();
     return data;
 };
+
+
+export const verifyPay = async (tournamentId) => {
+    try {
+        const payInfo = await getTournamentPayInfo(tournamentId);
+        if (payInfo) {
+            const tournamentData = await getPaidTournamentById(tournamentId);
+
+            if (!tournamentData) {
+                return { success: false, error: "Tournament not found" };
+            }
+
+            if (tournamentData.memberIds.includes(payInfo.userId)) {
+                return { success: true, error: `payment for UserId "${payInfo.userId}" is already verified` };
+            }
+
+            const transactionId = payInfo.transactionId;
+            const transactionRef = payInfo.transactionRef;
+            const toFind = transactionId + '+' + transactionRef;
+            const isVerified = tournamentData.payRequests.includes(toFind);
+
+            if (isVerified) {
+                await db.collection('tournaments').doc('paid').collection('ids').doc(tournamentId).update({
+                    memberIds: [...(tournamentData.memberIds || []), payInfo.userId]
+                });
+                return { success: true, message: "Payment received successfully" };
+            } else {
+                return { success: false, error: "Payment verification failed" };
+            }
+        } else {
+            return { success: false, error: "Payment info not found" };
+        }
+    } catch (error) {
+        console.error("Error verifying payment: ", error);
+        return { success: false, error: error.message };
+    }
+}
+
+
