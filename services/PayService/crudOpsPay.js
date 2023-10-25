@@ -1,26 +1,55 @@
-import { db } from '../Firebase/firebaseconfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const savePaymentToFirebase = async (userId, name, success, transactionId, amount, verified, type) => {
+export const savePaymentToAsyncStorage = async (userId, tournamentId, status, transactionId, transactionRef, amount, type) => {
     try {
-        // As Firebase generates the ID, we don't specify a .doc() argument
-        const paymentRef = db.collection('payments').doc('tournaments').collection('ids').doc();
-
-        // Set the payment data
-        await paymentRef.set({
+        const paymentInfo = {
             userId: userId,
-            name: name,
-            success: success,
+            status: status, 
             transactionId: transactionId,
+            transactionRef: transactionRef,
             amount: amount,
-            verified: verified,
-            type: type
-        });
+            type: type,
+            date: new Date().toISOString().split('T')[0]   // format: YYYY-MM-DD
+        };
 
-        console.log("Payment added successfully!");
-        return { success: true, paymentId: paymentRef.id };
+          // Convert the payment info to a string to store in AsyncStorage
+          const paymentString = JSON.stringify(paymentInfo);
+
+  
+          // Set the payment data in AsyncStorage with a dynamic key including the current date
+          const key = `pay/tournament/${tournamentId}`;
+          await AsyncStorage.setItem(key, paymentString);
+  
+          console.log("Payment added successfully to AsyncStorage!");
+          return { success: true };
 
     } catch (error) {
-        console.error("Error adding payment: ", error);
+        console.error("Error adding payment to AsyncStorage: ", error);
         return { success: false, error: error.message };
+    }
+};
+
+
+export const getTournamentPayInfo = async (tournamentId) => {
+    try {
+        // Get the key for the specific tournament
+        const key = `pay/tournament/${tournamentId}`;
+
+        // Fetch the payment data from AsyncStorage using the key
+        const paymentString = await AsyncStorage.getItem(key);
+
+        // If no data is found, return null or any appropriate default value
+        if (!paymentString) {
+            return null;
+        }
+
+        // Convert the string back to a JavaScript object
+        const paymentInfo = JSON.parse(paymentString);
+
+        return paymentInfo;
+
+    } catch (error) {
+        console.error("Error fetching payment info from AsyncStorage: ", error);
+        throw error;
     }
 };

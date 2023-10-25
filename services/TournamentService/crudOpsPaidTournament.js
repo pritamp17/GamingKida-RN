@@ -60,7 +60,7 @@ export const acceptPaidTournamentJoiningRequest = async (tournamentId, userId, r
                 if (tournamentData.requests && tournamentData.requests.includes(requestId)) {
                     
                     // Check members limit before processing the request
-                    if (tournamentData.payRequests.length >= MAX_Members_IN_COMPETETION) {
+                    if (tournamentData.memberIds.length >= MAX_Members_IN_COMPETETION) {
                         return { success: false, error: "Maximum members limit reached." };
                     }
 
@@ -68,7 +68,7 @@ export const acceptPaidTournamentJoiningRequest = async (tournamentId, userId, r
                     tournamentData.requests = tournamentData.requests.filter(reqId => reqId !== requestId);
 
                     // Add the requestId to members
-                    tournamentData.members.push(requestId);
+                    tournamentData.payRequests.push(requestId);
                     
                     // Update the document in the database
                     await db.collection('tournaments').doc('paid').collection('ids').doc(tournamentId).update({
@@ -97,7 +97,7 @@ export const acceptPaidTournamentJoiningRequest = async (tournamentId, userId, r
 export const sendPayNotificationsToMembers = async(tournamentId) => {
     try {
         const tournamentData = await getpaidTournamentById(tournamentId);
-        if (tournamentData && tournamentData.memberIds && tournamentData.memberIds.length > 0) {
+        if (tournamentData && tournamentData.payRequests && tournamentData.payRequests.length > 0) {
             // Define the message you want to send
             const message = {
                 to: '', // will be filled in loop
@@ -108,7 +108,7 @@ export const sendPayNotificationsToMembers = async(tournamentId) => {
             };
 
             // Loop through each member and send them a notification
-            for (let memberId of tournamentData.memberIds) {
+            for (let memberId of tournamentData.payRequests) {
                 // You would need to fetch the user's Expo push token 
                 // (assuming each user has a token saved in your database)
                 const token = await getUserPushToken(memberId); 

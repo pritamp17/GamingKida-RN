@@ -1,9 +1,10 @@
 import {sendPayment} from './upiOps'
-import {savePaymentToFirebase} from './crudOpsPay'
+import {savePaymentToAsyncStorage, getTournamentPayInfo} from './crudOpsPay'
 import {Payment} from './helper'
 
 export {
     sendPayment,
-    savePaymentToFirebase,
+    savePaymentToAsyncStorage,
+    getTournamentPayInfo,
     Payment
 }

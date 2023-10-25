@@ -16,7 +16,7 @@ class Tournament {
         this.publicOrPrivate = publicOrPrivate; // Indicates if the tournament is public or private /// Only for orgs
         this.memberIds = memberIds;            // List of members (users) of the tournament
         this.requests = requests;              // List of join requests for the tournament (especially for private tournaments)
-        this.payRequests = this.payRequests
+        this.payRequests = payRequests         // transcation id of the payments made
     }
 }
 
@@ -70,15 +70,31 @@ export const sendRequestToJoinCompetetion = async (userId, tournamentId, paid) =
         }
         
         if(tournamentData && !tournamentData.requests.includes(userId)){
-            await await db.collection('tournaments').doc(type).collection('ids').doc(tournamentId).update({
+             await db.collection('tournaments').doc(type).collection('ids').doc(tournamentId).update({
                 requests: [...tournamentData.requests, userId]
             });
         }else{
             return {success: false, error: `User has sent request already for joining "${tournamentData.name}" ` };
-        }  
+        }
+        return {success: true, error: `Request sent for Joining "${tournamentData.name}" ` };
     } catch (error) {
         console.error(`error in sending joining request to tournament with ID "${tournamentId}"`);
         return {success: false, error: error.message };
+    }
+}
+
+export const addTransxIdToTournamnet = async (id, transxId) => {
+    try {
+        const tournamentData = await getPaidTournamentById(id);
+        if(tournamentData && !tournamentData.payRequests.includes(transxIs)){
+            await db.collection('tournaments').doc('paid').collection('ids').doc(id).update({
+                payRequests: [...tournamentData.payRequests, transxId]
+            })
+        }else{
+            return {success: false, error: `Payrequest "${transxId}" already present in "${tournamentData.name}"` };
+        }
+    } catch (error) {
+        return {success: false, error: `Failed to update PayRequests "${id}" ` };
     }
 }
 
