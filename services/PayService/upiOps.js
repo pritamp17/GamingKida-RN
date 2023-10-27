@@ -6,7 +6,7 @@ export const sendPayment = async (vpa, name, amount, type, transactionRef, tourn
     const successCallbackWithData = (data) => {
         console.log("Success", data);
         savePaymentToAsyncStorage(userId, tournamentId, data.Status, data.txnId, transactionRef, amount, type);
-        addTransxIdToTournamnet(tournamentId, data.txnId, data.txnRef);
+        addTransxIdToTournamnet(tournamentId, data.txnId, data.txnRef); //// why verify pay ?? redirect to screen
     };
 
     const failureCallbackWithData = (data) => {
