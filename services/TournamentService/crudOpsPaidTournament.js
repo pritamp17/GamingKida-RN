@@ -39,7 +39,8 @@ export const createPaidCompetition = async (orgId, orgName, name, description, g
             memberIds: [],
             requests: [],
             payRequests: [],
-            start: false
+            start: new Date().toISOString(),
+            isCompleted: false
         };
         const docRef = await db.collection('tournaments').doc('paid').collection('ids').add(newCompetition); // tournaments is the collection name in Firebase Firestore
         addCompetitionToOrg(orgName, docRef.id);
