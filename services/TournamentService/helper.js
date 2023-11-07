@@ -126,9 +126,26 @@ export const startTournament = async (id, paid) => {
     }
 }
 
-export const competetionStatus = (id, paid) => {
+export const competetionStatus = async(id, paid) => {
     try {
-        
+        // start >= current + 1 hrs --> completed --> isCompleted true
+        // start < current + 1---- --> live 
+        const isPaid = paid == true ? 'paid' : 'unpaid';
+        let tournamentData;
+         if(paid) {
+            tournamentData = getPaidTournamentById(id);
+        }else{
+            tournamentData = getUnpaidTournamentById(id);
+        } 
+        if(tournamentData.isCompleted){}
+        if(tournamentData.start != tournamentData.createdAt){
+        await db.collection('tournaments').doc(isPaid).collection('ids').doc(id).update({
+           start: new Date().toISOString()
+        });
+        return {success: true, error: `tournamnet with Id "${id}" started successfully` };
+    }else{
+        return {success: false, error: `tournamnet with Id "${id}" already started` };
+    }
     } catch (error) {
         
     }
