@@ -1,7 +1,7 @@
 import { db } from '../Firebase/firebaseconfig';
 
 class Tournament {
-    constructor(orgId, orgName,name, game, description, image, createdBy, createdAt, scheduledAt, paid, fee, publicOrPrivate, memberIds = [], requests = [], payRequests = []) {
+    constructor(orgId, orgName,name, game, description, image, createdBy, createdAt, scheduledAt, paid, fee, publicOrPrivate, memberIds = [], requests = [], payRequests = [], start, isCompleted) {
         this.orgId = orgId;                    // ID of the organization (or userId if created by an individual user)
         this.orgName = orgName                 // orgName is same as createdBy for individual user
         this.name = name;                      // Name of the tournament
@@ -17,6 +17,8 @@ class Tournament {
         this.memberIds = memberIds;            // List of members (users) of the tournament
         this.requests = requests;              // List of join requests for the tournament (especially for private tournaments)
         this.payRequests = payRequests         // transcation id of the payments made
+        this.start = start
+        this.isCompleted = this.isCompleted 
     }
 }
 
@@ -92,11 +94,60 @@ export const addTransxIdToTournamnet = async (id, transxId, transxRef, userId) =
                 payRequests: [...tournamentData.payRequests, transcId],
                 memberIds: [...tournamentData.memberIds, userId]
             })
+            return {success: true, error: `Payrequest "${transxId}" successfull in "${tournamentData.name}"` };
         }else{
             return {success: false, error: `Payrequest "${transxId}" already present in "${tournamentData.name}"` };
         }
     } catch (error) {
         return {success: false, error: `Failed to update PayRequests "${id}" ` };
+    }
+}
+
+export const startTournament = async (id, paid) => {
+    try {
+        const isPaid = paid == true ? 'paid' : 'unpaid';
+        let tournamentData;
+         if(paid) {
+            tournamentData = getPaidTournamentById(id);
+        }else{
+            tournamentData = getUnpaidTournamentById(id);
+        } 
+        if(tournamentData.start != tournamentData.createdAt){
+        await db.collection('tournaments').doc(isPaid).collection('ids').doc(id).update({
+           start: new Date().toISOString()
+        });
+        return {success: true, error: `tournamnet with Id "${id}" started successfully` };
+    }else{
+        return {success: false, error: `tournamnet with Id "${id}" already started` };
+    }
+    } catch (error) {
+        console.log(error.message)
+        return {success: false, error: error.message };
+    }
+}
+
+export const competetionStatus = async(id, paid) => {
+    try {
+        // start >= current + 1 hrs --> completed --> isCompleted true
+        // start < current + 1---- --> live 
+        const isPaid = paid == true ? 'paid' : 'unpaid';
+        let tournamentData;
+         if(paid) {
+            tournamentData = getPaidTournamentById(id);
+        }else{
+            tournamentData = getUnpaidTournamentById(id);
+        } 
+        if(tournamentData.isCompleted){}
+        if(tournamentData.start != tournamentData.createdAt){
+        await db.collection('tournaments').doc(isPaid).collection('ids').doc(id).update({
+           start: new Date().toISOString()
+        });
+        return {success: true, error: `tournamnet with Id "${id}" started successfully` };
+    }else{
+        return {success: false, error: `tournamnet with Id "${id}" already started` };
+    }
+    } catch (error) {
+        
     }
 }
 
