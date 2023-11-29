@@ -4,7 +4,7 @@ import {orgExists, isUserAdmin, addCompetitionToOrg} from '../OrgService/index'
 
 const MAX_Members_IN_COMPETETION = 100;
 
-export const createCompetition = async (orgId, orgName, name, description, game, imageUrl, createdBy, scheduledAt, paid, fee, publicOrPrivate,) => {
+export const createCompetition = async (orgId, orgName, name, description, game, imageUrl, createdBy, scheduledAt, paid, fee, publicOrPrivate) => {
     try {
 
         if(orgId == createdBy){
