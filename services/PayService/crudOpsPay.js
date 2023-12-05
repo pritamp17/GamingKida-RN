@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { db } from '../Firebase/firebaseConfig';
 
 export const savePaymentToAsyncStorage = async (userId, tournamentId, status, transactionId, transactionRef, amount, type) => {
     try {
@@ -53,3 +54,35 @@ export const getTournamentPayInfo = async (tournamentId) => {
         throw error;
     }
 };
+
+
+export const savePaymentToFirebase = async (userId, txnId, transactionRef, amount, type, orgId, name) => {
+    try {
+        // Check if the payment collection for the organization exists
+        const orgDocRef = db.collection('payment').doc(orgId);
+        const orgDoc = await orgDocRef.get();
+
+        if (!orgDoc.exists) {
+            // If the organization document doesn't exist, create it
+            await orgDocRef.set({});
+        }
+
+        // Now, add the payment document to the organization's payments collection
+        const paymentRef = await orgDocRef.collection('payments').add({
+            userId,
+            txnId,
+            transactionRef,
+            amount,
+            type,
+            orgId,
+            success: true, // You may adjust this based on your payment success logic
+            name: name // Replace with the actual logic to get the name
+        });
+
+        console.log('Payment completed successfully created with ID: ', paymentRef.id);
+        return paymentRef.id;
+    } catch (error) {
+        console.error('Error making payment: ', error);
+        return null;
+    }
+}

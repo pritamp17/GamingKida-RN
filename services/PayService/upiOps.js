@@ -1,12 +1,11 @@
 import UPIPayment from 'react-native-upi-payment';
-import { savePaymentToAsyncStorage } from './index';
-import { addTransxIdToTournamnet } from '../TournamentService/index';
+import {handleCompetetionJoinSucces} from './helper'
 
-export const sendPayment = async (vpa, name, amount, type, transactionRef, tournamentId, userId) => {
+// orgId = userId if competetion created by indvidual user
+export const sendPayment = async (vpa, name, amount, type, transactionRef, tournamentId, userId, orgId) => {
     const successCallbackWithData = (data) => {
         console.log("Success", data);
-        savePaymentToAsyncStorage(userId, tournamentId, data.Status, data.txnId, transactionRef, amount, type);
-        addTransxIdToTournamnet(tournamentId, data.txnId, data.txnRef);
+        handleCompetetionJoinSucces(userId, data.txnId, transactionRef, amount, orgId, name)
     };
 
     const failureCallbackWithData = (data) => {
@@ -17,7 +16,7 @@ export const sendPayment = async (vpa, name, amount, type, transactionRef, tourn
     UPIPayment.initializePayment({
         vpa: vpa,
         payeeName: name,
-        amount: amount.toString(),
+        amount: amount.toString(), 
         transactionNote: type,
         transactionRef: transactionRef
     }, successCallbackWithData, failureCallbackWithData);
