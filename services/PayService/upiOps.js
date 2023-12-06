@@ -5,12 +5,11 @@ import {handleCompetetionJoinSucces} from './helper'
 export const sendPayment = async (vpa, name, amount, type, transactionRef, tournamentId, userId, orgId) => {
     const successCallbackWithData = (data) => {
         console.log("Success", data);
-        handleCompetetionJoinSucces(userId, data.txnId, transactionRef, amount, orgId, name)
+        handleCompetetionJoinSucces(userId, data.txnId, transactionRef, amount, orgId, tournamentId, name)
     };
 
     const failureCallbackWithData = (data) => {
         console.log("Failed", data);
-        savePaymentToAsyncStorage(userId, tournamentId, data.Status, data.txnId ? data.txnId : null, transactionRef , amount, type);
     };
 
     UPIPayment.initializePayment({

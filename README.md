@@ -629,12 +629,20 @@ AdminUser || orgId -------> competeId -------> prize
 ///////////// connections ////////////////
 user -> conection 
         -> competetionId --> prize
-        -> orgId
+        -> orgIdS
 
 
 
 
 ////////////////////// DB schema
 
-payment -> orgId
+payment -> tournament -> id
+tournament -> paid -> id
+           -> unpaid -> id
 
+///////////////
+
+prize 
+-> admin will select winner
+-> winner will uplaod ss {i am uing ocr using gpt4 }
+-> create one more db with userId and gaming user name from ocr result i am going to verify gaming user name and date and name

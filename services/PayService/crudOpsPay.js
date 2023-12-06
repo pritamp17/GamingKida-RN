@@ -56,7 +56,7 @@ export const getTournamentPayInfo = async (tournamentId) => {
 };
 
 
-export const savePaymentToFirebase = async (userId, txnId, transactionRef, amount, type, orgId, name) => {
+export const savePaymentToFirebase = async (userId, txnId, transactionRef, amount, type, orgId, name,tournamentId) => {
     try {
         // Check if the payment collection for the organization exists
         const orgDocRef = db.collection('payment').doc(orgId);
@@ -76,7 +76,8 @@ export const savePaymentToFirebase = async (userId, txnId, transactionRef, amoun
             type,
             orgId,
             success: true, // You may adjust this based on your payment success logic
-            name: name // Replace with the actual logic to get the name
+            name: name, // Replace with the actual logic to get the name
+            tournamentId:tournamentId
         });
 
         console.log('Payment completed successfully created with ID: ', paymentRef.id);
