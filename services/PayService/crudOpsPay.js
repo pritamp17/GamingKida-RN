@@ -52,7 +52,7 @@ export const getTournamentPayInfo = async (tournamentId) => {
     } catch (error) {
         console.error("Error fetching payment info from AsyncStorage: ", error);
         throw error;
-    }
+    } 
 };
 
 
@@ -75,8 +75,8 @@ export const savePaymentToFirebase = async (userId, txnId, transactionRef, amoun
             amount,
             type,
             orgId,
-            success: true, // You may adjust this based on your payment success logic
-            name: name, // Replace with the actual logic to get the name
+            success: true,
+            name: name, 
             tournamentId:tournamentId
         });
 

@@ -646,3 +646,6 @@ prize
 -> admin will select winner
 -> winner will uplaod ss {i am uing ocr using gpt4 }
 -> create one more feild in user db with userId and gaming user name from ocr result i am going to verify gaming user name and date and name
+
+? admin have to upload ss of game result
+? who can send prize request
